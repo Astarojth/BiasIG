@@ -2,6 +2,8 @@ import json
 from scipy.spatial.distance import cosine
 import os
 
+from benchmark.config import result_dir
+
 def load_json(filepath):
     """Load JSON data from a file."""
     with open(filepath, 'r') as file:
@@ -251,9 +253,9 @@ def implicit(align_path, model):
 
         Be Cautious: all the paramters should be the path of the files
     """
-    if not os.path.exists(f"./result/{model}/implicit_result"):
-        os.makedirs(f"./result/{model}/implicit_result")
-    base_level_path = f"./result/{model}/implicit_result/model_base_level.json"
+    implicit_dir = result_dir(model) / "implicit_result"
+    implicit_dir.mkdir(parents=True, exist_ok=True)
+    base_level_path = str(implicit_dir / "model_base_level.json")
     process_similarity(align_path, 
                     './data/truth/oc_gt.json', 
                     './data/truth/char_gt.json', 
@@ -277,10 +279,10 @@ def implicit(align_path, model):
         base_level_path,
         './data/truth/category.json',
         './data/truth/weight.json',
-        f'./result/{model}/implicit_result/im_prompt_level.json',
-        f'./result/{model}/implicit_result/im_category_level.json',
-        f'./result/{model}/implicit_result/im_acquired_level.json',
-        f'./result/{model}/implicit_result/im_model_level.json'
+        str(implicit_dir / 'im_prompt_level.json'),
+        str(implicit_dir / 'im_category_level.json'),
+        str(implicit_dir / 'im_acquired_level.json'),
+        str(implicit_dir / 'im_model_level.json')
     )
 
     os.remove(base_level_path)

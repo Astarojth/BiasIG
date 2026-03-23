@@ -16,8 +16,4 @@ outputs/
 model/*
 !model/Readme.md
 
-result/*
-!result/Readme.md
-
 *.log
-

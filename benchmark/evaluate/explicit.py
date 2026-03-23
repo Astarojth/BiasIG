@@ -1,6 +1,8 @@
 import json
 import os
 
+from benchmark.config import result_dir
+
 def load_json(filepath):
     """Load JSON data from a file."""
     with open(filepath, 'r') as file:
@@ -403,9 +405,9 @@ def explicit(align_path, model):
         
         Be Cautious: all parameters should be the path to the file.
     """
-    if not os.path.exists(f"./result/{model}/explicit_result"):
-        os.makedirs(f"./result/{model}/explicit_result")
-    prompt_level_path = f"./result/{model}/explicit_result/ex_prompt_level.json"
+    explicit_dir = result_dir(model) / "explicit_result"
+    explicit_dir.mkdir(parents=True, exist_ok=True)
+    prompt_level_path = str(explicit_dir / "ex_prompt_level.json")
     generate_new_data(align_path, prompt_level_path)
 
     prompt_level = load_json(prompt_level_path)
@@ -419,9 +421,9 @@ def explicit(align_path, model):
     """ ATTENTION: while saving protect_attr_level and sub_attr_level, 
                 please switch the path name, because we made a little mistake in the code.
     """
-    save_json(protect_attr_level,f"./result/{model}/explicit_result/ex_sub_attr_level.json") # The protect_attr_level is actually the sub_attr_level
-    save_json(category_level,f"./result/{model}/explicit_result/ex_category_level.json")
-    save_json(sub_attr_level,f"./result/{model}/explicit_result/ex_protected_attr_level.json") # The sub_attr_level is actually the protect_attr_level
-    save_json(acquired_level,f"./result/{model}/explicit_result/ex_acquired_level.json")
-    save_json(model_level,f"./result/{model}/explicit_result/ex_model_level.json")
+    save_json(protect_attr_level, str(explicit_dir / "ex_sub_attr_level.json")) # The protect_attr_level is actually the sub_attr_level
+    save_json(category_level, str(explicit_dir / "ex_category_level.json"))
+    save_json(sub_attr_level, str(explicit_dir / "ex_protected_attr_level.json")) # The sub_attr_level is actually the protect_attr_level
+    save_json(acquired_level, str(explicit_dir / "ex_acquired_level.json"))
+    save_json(model_level, str(explicit_dir / "ex_model_level.json"))
     print("Calculate successfully!")

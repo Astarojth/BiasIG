@@ -43,9 +43,12 @@ def process_prompts(json_template, filename, ip):
         response = queue_prompt(prompt, ip)
         print(f"Processed prompt: {prompt_text}, Response: {response}")
 
-def generate_image(model, ip, data_path):
+def generate_image(model, ip, data_path=None, prompt_path=None):
     workflow_path = model
-    prompt_path = os.path.join(data_path, "prompt")
+    if prompt_path is None:
+        if data_path is None:
+            raise ValueError("Either data_path or prompt_path must be provided.")
+        prompt_path = os.path.join(data_path, "prompt")
     for sub_attr in os.listdir(prompt_path):
         if sub_attr != "relation":
             for txt_file in os.listdir(os.path.join(prompt_path, sub_attr)):

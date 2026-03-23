@@ -1,0 +1,16 @@
+model_name: sdxl
+
+generation:
+  workflow: ./data/workflow/sdxl.json
+  iterations: 1
+  data_path: ./data
+  endpoint: http://127.0.0.1:8190/prompt
+
+alignment:
+  model: BIGBench/InternVL-4B-bench
+
+paths:
+  raw_output_dir: ./outputs/raw/sdxl
+  arranged_dir: ./outputs/arranged/sdxl
+  aligned_dir: ./outputs/aligned/sdxl
+  align_file: ./outputs/aligned/sdxl/align_sdxl.json

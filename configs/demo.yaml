@@ -1,0 +1,16 @@
+model_name: demo-sdxl
+
+generation:
+  workflow: ./data/workflow/sdxl.json
+  iterations: 1
+  prompt_root: ./demo/prompt
+  endpoint: http://127.0.0.1:8190/prompt
+
+alignment:
+  model: BIGBench/InternVL-4B-bench
+
+paths:
+  raw_output_dir: ./outputs/raw/demo-sdxl
+  arranged_dir: ./outputs/arranged/demo-sdxl
+  aligned_dir: ./outputs/aligned/demo-sdxl
+  align_file: ./outputs/aligned/demo-sdxl/align_demo-sdxl.json

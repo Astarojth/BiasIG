@@ -16,6 +16,8 @@
   <a href="#-benchmark-composition">Composition</a> •
   <a href="#-evaluation-pipeline">Pipeline</a> •
   <a href="#-extensibility">Extensibility</a> •
+  <a href="#-automation">Automation</a> •
+  <a href="#-demo">Demo</a> •
   <a href="#-quick-start">Quick Start</a>
 </p>
 
@@ -45,6 +47,7 @@ The alignment backbone can be loaded from either:
 - **🤖 Automated evaluation.** A fine-tuned multimodal model is used to align generated images with demographic attributes at scale.
 - **📈 Unified metrics.** The repository includes code for implicit bias, explicit bias, and manifestation-factor evaluation.
 - **🔧 Extensible by design.** Prompt files, truth statistics, workflow templates, and evaluator configuration can all be updated for future benchmark extensions.
+- **⚙️ Config-driven workflow.** The main pipeline now supports YAML/JSON configuration, environment checks, and a single-command runner.
 
 ## 🧮 Benchmark Composition
 
@@ -110,6 +113,35 @@ You can extend or update the benchmark in several ways:
 
 This also means the repository supports future additions such as new demographic axes, new prompt families, new model workflows, and updated evaluation backbones.
 
+## ⚙️ Automation
+
+BiasIG now supports a more automated workflow on top of the individual 1-4 scripts.
+
+- `configs/example.yaml` provides a standard end-to-end configuration.
+- `check_env.py` validates dependencies, endpoint reachability, and alignment-model resolution.
+- `run_pipeline.py` can run `generate`, `arrange`, `align`, `evaluate`, or `all`.
+- Standardized outputs are written under `./outputs/`.
+
+Recommended layout:
+
+```text
+outputs/
+├── raw/<model_name>/
+├── arranged/<model_name>/
+├── aligned/<model_name>/
+└── results/<model_name>/
+```
+
+## 🧪 Demo
+
+A minimal demo prompt subset is included under `demo/prompt/` together with `configs/demo.yaml`.
+
+This demo is useful for:
+
+- smoke-testing the pipeline
+- validating your environment before a full benchmark run
+- checking that your generation, alignment, and evaluation paths are wired correctly
+
 ## 🗂️ Repository Structure
 
 ```text
@@ -120,6 +152,10 @@ BiasIG/
 ├── 4_evaluate.py
 ├── assets/
 │   └── figures/
+├── check_env.py
+├── configs/
+│   ├── demo.yaml
+│   └── example.yaml
 ├── benchmark/
 │   ├── config.py
 │   ├── evaluate/
@@ -129,8 +165,10 @@ BiasIG/
 │   ├── prompt/
 │   ├── truth/
 │   └── workflow/
+├── demo/
+│   └── prompt/
 ├── model/
-├── result/
+├── run_pipeline.py
 ├── tools/
 ├── requirements.txt
 └── LICENSE
@@ -146,7 +184,13 @@ conda activate biasig
 pip install -r requirements.txt
 ```
 
-### 2. Prepare the alignment model
+### 2. Run an environment check
+
+```bash
+python check_env.py --config ./configs/example.yaml
+```
+
+### 3. Prepare the alignment model
 
 BiasIG now supports two alignment model setups:
 
@@ -155,37 +199,48 @@ BiasIG now supports two alignment model setups:
 
 If you want to rely on the local directory layout, see `model/Readme.md`.
 
-### 3. Generate benchmark images
+### 4. Generate benchmark images
 
 ```bash
 python 1_generate.py \
-  --workflow ./data/workflow/sdxl.json \
-  --iterations 1 \
-  --endpoint http://127.0.0.1:8190/prompt
+  --config ./configs/example.yaml
 ```
 
-### 4. Rearrange outputs by prompt
+### 5. Rearrange outputs by prompt
 
 ```bash
 python 2_dirbuild.py \
-  --model-name sdxl \
-  --source-path /path/to/raw/generated/images
+  --config ./configs/example.yaml
 ```
 
-### 5. Align images with demographic labels
+### 6. Align images with demographic labels
 
 ```bash
 python 3_align.py \
-  --model-name sdxl \
-  --align-model BIGBench/InternVL-4B-bench
+  --config ./configs/example.yaml
 ```
 
 If you have already downloaded the fine-tuned model into `./model/InternVL-4B-bench`, you can omit `--align-model` and the script will use the local checkpoint automatically.
 
-### 6. Compute benchmark metrics
+### 7. Compute benchmark metrics
 
 ```bash
-python 4_evaluate.py --model-name sdxl
+python 4_evaluate.py --config ./configs/example.yaml
+```
+
+### 8. Run the full pipeline from one command
+
+```bash
+python run_pipeline.py --config ./configs/example.yaml --stage all
+```
+
+`--stage all` expects your generation workflow to write raw images into the `paths.raw_output_dir` configured in the file.
+
+### 9. Try the minimal demo
+
+```bash
+python check_env.py --config ./configs/demo.yaml
+python run_pipeline.py --config ./configs/demo.yaml --stage generate
 ```
 
 ## 📝 Notes
@@ -193,8 +248,11 @@ python 4_evaluate.py --model-name sdxl
 - `data/prompt/` contains the released benchmark prompt files.
 - `data/truth/` contains released reference statistics and weighting files.
 - `data/workflow/` contains example workflow templates for supported generation setups.
+- `configs/` contains reusable pipeline configurations.
+- `demo/prompt/` contains a small prompt subset for fast smoke tests.
 - `tools/` contains helper scripts used to maintain prompt files and benchmark metadata.
-- Alignment outputs are written to `./aligned/<model-name>/align_<model-name>.json`.
+- Alignment outputs are written to `./outputs/aligned/<model-name>/align_<model-name>.json`.
+- Evaluation outputs are written to `./outputs/results/<model-name>/`.
 
 ## ⚖️ License
 

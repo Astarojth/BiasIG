@@ -1,5 +1,7 @@
 import json
 import os
+
+from benchmark.config import result_dir
 def load_json(filepath):
     """Load JSON data from a file."""
     with open(filepath, 'r') as file:
@@ -218,9 +220,9 @@ def eta(align_path, model):
         
         Be Cautious: all parameters are file path
     """
-    if not os.path.exists(f"./result/{model}/eta"):
-        os.makedirs(f"./result/{model}/eta")
-    meta_path = f"./result/{model}/eta/meta_eta.json"
+    eta_dir = result_dir(model) / "eta"
+    eta_dir.mkdir(parents=True, exist_ok=True)
+    meta_path = str(eta_dir / "meta_eta.json")
 
     process_and_update_json(align_path, meta_path)
 
@@ -231,6 +233,6 @@ def eta(align_path, model):
     sr_gt_data = load_json('./data/truth/sr_gt.json')
 
     alpha, eta_sum = calculate_eta(eta_pair, generative_data, char_gt_data, oc_gt_data, sr_gt_data)
-    save_json(alpha, f"./result/{model}/eta/alpha.json")
-    save_json(eta_sum, f"./result/{model}/eta/eta_sum.json")
+    save_json(alpha, str(eta_dir / "alpha.json"))
+    save_json(eta_sum, str(eta_dir / "eta_sum.json"))
     print("Calculate successfully!")
