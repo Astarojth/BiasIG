@@ -42,9 +42,5 @@ def align_result_file(model_name: str) -> Path:
     return aligned_dir(model_name) / f"align_{model_name}.json"
 
 
-def response_result_file(model_name: str) -> Path:
-    return aligned_dir(model_name) / f"responses_{model_name}.json"
-
-
 def result_dir(model_name: str) -> Path:
     return repo_path("result", model_name)
