@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use BiasIG, please cite the accepted IJCNN 2026 paper."
+title: "BiasIG: Benchmarking Multi-dimensional Social Biases in Text-to-Image Models"
+type: software
+authors:
+  - family-names: Luo
+    given-names: Hanjun
+  - family-names: Huang
+    given-names: Zhimu
+  - family-names: Huang
+    given-names: Haoyu
+  - family-names: Deng
+    given-names: Ziye
+  - family-names: Chen
+    given-names: Ruizhe
+  - family-names: Li
+    given-names: Xinfeng
+  - family-names: Liu
+    given-names: Zuozhu
+  - family-names: Salam
+    given-names: Hanan
+repository-code: "https://github.com/Astarojth/BiasIG"
+license: "SEE LICENSE IN LICENSE"
+abstract: "BiasIG is a benchmark for diagnosing social bias in text-to-image models across acquired attributes, protected attributes, manifestation, and visibility."
