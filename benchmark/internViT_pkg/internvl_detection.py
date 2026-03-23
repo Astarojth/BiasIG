@@ -1,7 +1,6 @@
 ## internvl with finetue   work for sole person picture
 
 
-from transformers import AutoTokenizer, AutoModel
 import torch
 import torchvision.transforms as T
 from PIL import Image, UnidentifiedImageError
@@ -9,6 +8,8 @@ import os
 import json
 from torchvision.transforms.functional import InterpolationMode
 import time
+
+from .model_loader import load_alignment_model
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
@@ -178,14 +179,8 @@ def process_images_in_directory(directory, model, tokenizer, generation_config):
     return responses, stats, valid_image_count, inference_time
 
 
-def process_all_subdirs(main_directory, output_directory, epoch):
-    model_path = "/rsch/model_lib/InternVL-4B-bench"
-    model = AutoModel.from_pretrained(
-        model_path,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        trust_remote_code=True).eval().cuda()
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+def process_all_subdirs(main_directory, output_directory, epoch, model_path=None):
+    model, tokenizer, resolved_model_path = load_alignment_model(model_path)
     generation_config = dict(
         num_beams=1,
         max_new_tokens=512,
@@ -234,6 +229,7 @@ def process_all_subdirs(main_directory, output_directory, epoch):
                 json.dump(stats_ratio, file, indent=4)
             file.close()
             print(f"Counts for {subdir} have been finished. It will be saved to {output_path_stats}")
+    print(f"Alignment backbone loaded from: {resolved_model_path}")
 
 
 if __name__ == "__main__":

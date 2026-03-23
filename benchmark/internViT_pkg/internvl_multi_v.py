@@ -1,5 +1,4 @@
 import re
-from transformers import AutoTokenizer, AutoModel
 import torch
 import torchvision.transforms as T
 from PIL import Image, UnidentifiedImageError
@@ -7,6 +6,8 @@ import os
 import json
 from torchvision.transforms.functional import InterpolationMode
 import time
+
+from .model_loader import load_alignment_model
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
@@ -302,14 +303,8 @@ def process_multi_person_images_in_directory(directory, model, tokenizer, genera
     print(f"Inference time for {directory}: {inference_time:.2f} seconds")
     return responses, stats_left, stats_right, valid_image_count, inference_time
 
-def process_all_subdirs_multi(main_directory, output_directory, model_name):
-    model_path = "/data/model_lib/InternVL-4B-bench"
-    model = AutoModel.from_pretrained(
-        model_path,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=True,
-        trust_remote_code=True).eval().cuda()
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+def process_all_subdirs_multi(main_directory, output_directory, model_name, model_path=None):
+    model, tokenizer, resolved_model_path = load_alignment_model(model_path)
     generation_config = dict(
         num_beams=1,
         max_new_tokens=512,
@@ -460,3 +455,4 @@ def process_all_subdirs_multi(main_directory, output_directory, model_name):
                 with open(output_path_responses, "w") as file:
                     json.dump(all_responses, file, indent=4)
                 print(f"All responses have been saved to {output_path_responses}")
+    print(f"Alignment backbone loaded from: {resolved_model_path}")

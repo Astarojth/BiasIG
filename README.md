@@ -32,6 +32,11 @@ BiasIG provides a unified benchmark for evaluating multi-dimensional social bias
 
 BiasIG is designed to support both benchmark reproduction and follow-up research on bias diagnosis and mitigation in generative models.
 
+The alignment backbone can be loaded from either:
+
+- a local directory at `./model/InternVL-4B-bench`
+- or the public Hugging Face repository `BIGBench/InternVL-4B-bench`
+
 ## ✨ Highlights
 
 - **🧩 4D definition system.** Bias is organized along acquired attributes, protected attributes, manifestation, and visibility.
@@ -100,6 +105,7 @@ BiasIG/
 ├── assets/
 │   └── figures/
 ├── benchmark/
+│   ├── config.py
 │   ├── evaluate/
 │   ├── generate/
 │   └── internViT_pkg/
@@ -126,49 +132,44 @@ pip install -r requirements.txt
 
 ### 2. Prepare the alignment model
 
-Download the fine-tuned InternVL checkpoint and place it under the directory layout described in `model/Readme.md`.
+BiasIG now supports two alignment model setups:
+
+- **Local model directory:** place the fine-tuned checkpoint at `./model/InternVL-4B-bench`
+- **Direct Hugging Face loading:** use `BIGBench/InternVL-4B-bench`
+
+If you want to rely on the local directory layout, see `model/Readme.md`.
 
 ### 3. Generate benchmark images
 
-Edit `1_generate.py` to point to:
-
-- the ComfyUI workflow JSON you want to use
-- the prompt endpoint exposed by your ComfyUI instance
-- the benchmark data directory if you move it
-
-Then run:
-
 ```bash
-python 1_generate.py
+python 1_generate.py \
+  --workflow ./data/workflow/sdxl.json \
+  --iterations 1 \
+  --endpoint http://127.0.0.1:8190/prompt
 ```
 
 ### 4. Rearrange outputs by prompt
 
-Edit `2_dirbuild.py` with:
-
-- `model`: a short model name
-- `source_path`: the raw image output directory from generation
-
-Then run:
-
 ```bash
-python 2_dirbuild.py
+python 2_dirbuild.py \
+  --model-name sdxl \
+  --source-path /path/to/raw/generated/images
 ```
 
 ### 5. Align images with demographic labels
 
-Edit `3_align.py` with the model name and output directory, then run:
-
 ```bash
-python 3_align.py
+python 3_align.py \
+  --model-name sdxl \
+  --align-model BIGBench/InternVL-4B-bench
 ```
+
+If you have already downloaded the fine-tuned model into `./model/InternVL-4B-bench`, you can omit `--align-model` and the script will use the local checkpoint automatically.
 
 ### 6. Compute benchmark metrics
 
-Edit `4_evaluate.py` with the same model name and the corresponding alignment output path, then run:
-
 ```bash
-python 4_evaluate.py
+python 4_evaluate.py --model-name sdxl
 ```
 
 ## 📝 Notes
@@ -177,6 +178,7 @@ python 4_evaluate.py
 - `data/truth/` contains released reference statistics and weighting files.
 - `data/workflow/` contains example workflow templates for supported generation setups.
 - `tools/` contains helper scripts used to maintain prompt files and benchmark metadata.
+- Alignment outputs are written to `./aligned/<model-name>/align_<model-name>.json`.
 
 ## ⚖️ License
 
