@@ -178,10 +178,6 @@ python 4_evaluate.py
 - `data/workflow/` contains example workflow templates for supported generation setups.
 - `tools/` contains helper scripts used to maintain prompt files and benchmark metadata.
 
-## 📚 Citation
-
-If you use BiasIG in your work, please cite the accepted IJCNN 2026 paper. A repository citation file is included in `CITATION.cff`.
-
 ## ⚖️ License
 
 This project is released under the terms specified in `LICENSE`.
