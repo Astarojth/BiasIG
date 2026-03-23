@@ -32,23 +32,89 @@ def run_step(script_name: str, config_path: str):
     subprocess.run(command, check=True)
 
 
+def require_path(path_value: str | None, message: str) -> Path:
+    if not path_value:
+        raise ValueError(message)
+    return Path(path_value)
+
+
+def require_existing_dir(path_value: str | None, message: str) -> Path:
+    path = require_path(path_value, message)
+    if not path.exists() or not path.is_dir():
+        raise FileNotFoundError(f"{message} Current value: {path}")
+    return path
+
+
+def require_existing_file(path_value: str | None, message: str) -> Path:
+    path = require_path(path_value, message)
+    if not path.exists() or not path.is_file():
+        raise FileNotFoundError(f"{message} Current value: {path}")
+    return path
+
+
+def validate_stage_inputs(config: dict, stage: str):
+    raw_dir = config_value(config, "paths", "raw_output_dir")
+    arranged = config_value(config, "paths", "arranged_dir")
+    aligned = config_value(config, "paths", "aligned_dir")
+    align_file = config_value(config, "paths", "align_file")
+
+    if stage == "generate":
+        require_path(
+            raw_dir,
+            "Config must define paths.raw_output_dir so generated images have a known target location.",
+        )
+    elif stage == "arrange":
+        require_existing_dir(
+            raw_dir,
+            "Arrange stage requires paths.raw_output_dir to exist and contain generated images.",
+        )
+    elif stage == "align":
+        require_existing_dir(
+            arranged,
+            "Align stage requires paths.arranged_dir to exist. Run arrange first or update the config.",
+        )
+    elif stage == "evaluate":
+        require_existing_file(
+            align_file,
+            "Evaluate stage requires paths.align_file to exist. Run align first or update the config.",
+        )
+
+
+def print_stage_summary(config: dict):
+    print("[BiasIG] Pipeline Summary")
+    print(f"  model_name      : {config_value(config, 'model_name', default='(unset)')}")
+    print(f"  workflow        : {config_value(config, 'generation', 'workflow', default='(unset)')}")
+    print(f"  prompt_root     : {config_value(config, 'generation', 'prompt_root', default='./data/prompt')}")
+    print(f"  raw_output_dir  : {config_value(config, 'paths', 'raw_output_dir', default='(unset)')}")
+    print(f"  arranged_dir    : {config_value(config, 'paths', 'arranged_dir', default='(unset)')}")
+    print(f"  aligned_dir     : {config_value(config, 'paths', 'aligned_dir', default='(unset)')}")
+    print(f"  align_file      : {config_value(config, 'paths', 'align_file', default='(unset)')}")
+    print("")
+
+
 if __name__ == "__main__":
     args = parse_args()
     config = load_config(args.config)
+    print_stage_summary(config)
 
     if args.stage == "generate":
+        validate_stage_inputs(config, "generate")
         run_step("1_generate.py", args.config)
     elif args.stage == "arrange":
+        validate_stage_inputs(config, "arrange")
         run_step("2_dirbuild.py", args.config)
     elif args.stage == "align":
+        validate_stage_inputs(config, "align")
         run_step("3_align.py", args.config)
     elif args.stage == "evaluate":
+        validate_stage_inputs(config, "evaluate")
         run_step("4_evaluate.py", args.config)
     else:
-        raw_dir = config_value(config, "paths", "raw_output_dir")
-        if not raw_dir:
-            raise ValueError(
-                "The 'all' stage requires paths.raw_output_dir in the config so arranged images can be built from generated files."
-            )
-        for step in ["1_generate.py", "2_dirbuild.py", "3_align.py", "4_evaluate.py"]:
-            run_step(step, args.config)
+        validate_stage_inputs(config, "generate")
+        run_step("1_generate.py", args.config)
+        validate_stage_inputs(config, "arrange")
+        run_step("2_dirbuild.py", args.config)
+        validate_stage_inputs(config, "align")
+        run_step("3_align.py", args.config)
+        validate_stage_inputs(config, "evaluate")
+        run_step("4_evaluate.py", args.config)

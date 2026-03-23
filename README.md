@@ -176,6 +176,15 @@ BiasIG/
 
 ## 🚀 Quick Start
 
+### Recommended Path
+
+If you want the shortest route to a successful run, use this sequence:
+
+1. Prepare `configs/example.yaml`
+2. Run `python check_env.py --config ./configs/example.yaml`
+3. Make sure your ComfyUI workflow writes generated images into `paths.raw_output_dir`
+4. Run `python run_pipeline.py --config ./configs/example.yaml --stage all`
+
 ### 1. Environment
 
 ```bash
@@ -234,7 +243,7 @@ python 4_evaluate.py --config ./configs/example.yaml
 python run_pipeline.py --config ./configs/example.yaml --stage all
 ```
 
-`--stage all` expects your generation workflow to write raw images into the `paths.raw_output_dir` configured in the file.
+`--stage all` expects your generation workflow to write raw images into the `paths.raw_output_dir` configured in the file. This is the key link between ComfyUI generation and the later arrange/align/evaluate stages.
 
 ### 9. Try the minimal demo
 
@@ -242,6 +251,10 @@ python run_pipeline.py --config ./configs/example.yaml --stage all
 python check_env.py --config ./configs/demo.yaml
 python run_pipeline.py --config ./configs/demo.yaml --stage generate
 ```
+
+### Advanced Usage
+
+If you prefer to run stages separately, all four main scripts still support direct CLI usage as well as `--config`-driven execution.
 
 ## 📝 Notes
 
@@ -253,6 +266,7 @@ python run_pipeline.py --config ./configs/demo.yaml --stage generate
 - `tools/` contains helper scripts used to maintain prompt files and benchmark metadata.
 - Alignment outputs are written to `./outputs/aligned/<model-name>/align_<model-name>.json`.
 - Evaluation outputs are written to `./outputs/results/<model-name>/`.
+- `run_pipeline.py` now performs stage-level dependency checks and will fail early if expected inputs are missing.
 
 ## ⚖️ License
 

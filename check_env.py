@@ -40,6 +40,10 @@ if __name__ == "__main__":
     endpoint = config_value(config, "generation", "endpoint", default="http://127.0.0.1:8190/prompt")
     align_model = resolve_align_model(config_value(config, "alignment", "model"))
     raw_output_dir = config_value(config, "paths", "raw_output_dir")
+    arranged_dir = config_value(config, "paths", "arranged_dir")
+    aligned_dir = config_value(config, "paths", "aligned_dir")
+    align_file = config_value(config, "paths", "align_file")
+    workflow = config_value(config, "generation", "workflow")
     prompt_root = config_value(config, "generation", "prompt_root")
 
     print("BiasIG Environment Check")
@@ -57,8 +61,12 @@ if __name__ == "__main__":
     print("")
     print("Pipeline Inputs")
     print(f"- generation endpoint: {endpoint} ({check_endpoint(endpoint)})")
+    print(f"- workflow: {workflow or '(not set)'} ({'ok' if workflow and Path(workflow).exists() else 'missing'})")
     print(f"- prompt root: {prompt_root or './data/prompt'}")
     print(f"- raw output dir: {raw_output_dir or '(not set)'}")
+    print(f"- arranged dir: {arranged_dir or '(not set)'}")
+    print(f"- aligned dir: {aligned_dir or '(not set)'}")
+    print(f"- align file: {align_file or '(not set)'}")
     if Path(str(align_model)).exists():
         print(f"- alignment model: local path found at {align_model}")
     else:
