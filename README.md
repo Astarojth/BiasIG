@@ -1,14 +1,26 @@
 # BiasIG: Benchmarking Multi-dimensional Social Biases in Text-to-Image Models
 
 <p align="center">
-  <strong>Accepted by IJCNN 2026</strong>
+  <img src="https://img.shields.io/badge/Accepted-IJCNN%202026-0f766e?style=flat-square" alt="Accepted by IJCNN 2026">
+  <img src="https://img.shields.io/badge/Task-Text--to--Image%20Bias%20Benchmark-c2410c?style=flat-square" alt="Text-to-Image Bias Benchmark">
+  <img src="https://img.shields.io/badge/Scope-47%2C040%20Prompts-1d4ed8?style=flat-square" alt="47040 prompts">
 </p>
 
 <p align="center">
-  BiasIG is a benchmark for auditing social bias in text-to-image models across acquired attributes, protected attributes, manifestation, and visibility.
+  <strong>🧭 A benchmark for auditing social bias in text-to-image models across acquired attributes, protected attributes, manifestation, and visibility.</strong>
 </p>
 
-## Overview
+<p align="center">
+  <a href="#-overview">Overview</a> •
+  <a href="#-highlights">Highlights</a> •
+  <a href="#-benchmark-composition">Composition</a> •
+  <a href="#-evaluation-pipeline">Pipeline</a> •
+  <a href="#-quick-start">Quick Start</a>
+</p>
+
+> BiasIG is built for researchers who want a more structured and diagnosis-oriented view of fairness in text-to-image generation, rather than a single coarse score.
+
+## 🌟 Overview
 
 BiasIG provides a unified benchmark for evaluating multi-dimensional social bias in text-to-image generation. The repository includes:
 
@@ -20,14 +32,14 @@ BiasIG provides a unified benchmark for evaluating multi-dimensional social bias
 
 BiasIG is designed to support both benchmark reproduction and follow-up research on bias diagnosis and mitigation in generative models.
 
-## Highlights
+## ✨ Highlights
 
-- **4D definition system.** Bias is organized along acquired attributes, protected attributes, manifestation, and visibility.
-- **Large prompt suite.** The benchmark contains 47,040 prompts spanning implicit and explicit evaluation settings.
-- **Automated evaluation.** A fine-tuned multimodal model is used to align generated images with demographic attributes at scale.
-- **Unified metrics.** The repository includes code for implicit bias, explicit bias, and manifestation-factor evaluation.
+- **🧩 4D definition system.** Bias is organized along acquired attributes, protected attributes, manifestation, and visibility.
+- **📦 Large prompt suite.** The benchmark contains 47,040 prompts spanning implicit and explicit evaluation settings.
+- **🤖 Automated evaluation.** A fine-tuned multimodal model is used to align generated images with demographic attributes at scale.
+- **📈 Unified metrics.** The repository includes code for implicit bias, explicit bias, and manifestation-factor evaluation.
 
-## Benchmark Composition
+## 🧮 Benchmark Composition
 
 The current release contains:
 
@@ -42,11 +54,17 @@ The current release contains:
 
 This totals **47,040 prompts**.
 
+| Category | Count |
+| --- | ---: |
+| Implicit prompts | 4,280 |
+| Explicit prompts | 42,760 |
+| Total prompts | 47,040 |
+
 <p align="center">
   <img src="assets/figures/prompt_portion.png" alt="Prompt composition in BiasIG" width="78%">
 </p>
 
-## Evaluation Pipeline
+## 🛠️ Evaluation Pipeline
 
 BiasIG follows a four-stage pipeline:
 
@@ -59,7 +77,7 @@ BiasIG follows a four-stage pipeline:
   <img src="assets/figures/architecture.png" alt="BiasIG evaluation pipeline" width="92%">
 </p>
 
-## Main Results
+## 📊 Main Results
 
 BiasIG was used in the paper to evaluate 8 mainstream text-to-image models and 3 debiasing methods.
 
@@ -71,7 +89,7 @@ BiasIG was used in the paper to evaluate 8 mainstream text-to-image models and 3
   <img src="assets/figures/debiasing.png" alt="BiasIG debiasing comparison" width="70%">
 </p>
 
-## Repository Structure
+## 🗂️ Repository Structure
 
 ```text
 BiasIG/
@@ -96,7 +114,7 @@ BiasIG/
 └── LICENSE
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### 1. Environment
 
@@ -153,17 +171,17 @@ Edit `4_evaluate.py` with the same model name and the corresponding alignment ou
 python 4_evaluate.py
 ```
 
-## Notes
+## 📝 Notes
 
 - `data/prompt/` contains the released benchmark prompt files.
 - `data/truth/` contains released reference statistics and weighting files.
 - `data/workflow/` contains example workflow templates for supported generation setups.
 - `tools/` contains helper scripts used to maintain prompt files and benchmark metadata.
 
-## Citation
+## 📚 Citation
 
 If you use BiasIG in your work, please cite the accepted IJCNN 2026 paper. A repository citation file is included in `CITATION.cff`.
 
-## License
+## ⚖️ License
 
 This project is released under the terms specified in `LICENSE`.
