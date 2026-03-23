@@ -15,6 +15,7 @@
   <a href="#-highlights">Highlights</a> •
   <a href="#-benchmark-composition">Composition</a> •
   <a href="#-evaluation-pipeline">Pipeline</a> •
+  <a href="#-extensibility">Extensibility</a> •
   <a href="#-quick-start">Quick Start</a>
 </p>
 
@@ -43,6 +44,7 @@ The alignment backbone can be loaded from either:
 - **📦 Large prompt suite.** The benchmark contains 47,040 prompts spanning implicit and explicit evaluation settings.
 - **🤖 Automated evaluation.** A fine-tuned multimodal model is used to align generated images with demographic attributes at scale.
 - **📈 Unified metrics.** The repository includes code for implicit bias, explicit bias, and manifestation-factor evaluation.
+- **🔧 Extensible by design.** Prompt files, truth statistics, workflow templates, and evaluator configuration can all be updated for future benchmark extensions.
 
 ## 🧮 Benchmark Composition
 
@@ -93,6 +95,20 @@ BiasIG was used in the paper to evaluate 8 mainstream text-to-image models and 3
 <p align="center">
   <img src="assets/figures/debiasing.png" alt="BiasIG debiasing comparison" width="70%">
 </p>
+
+## 🔧 Extensibility
+
+BiasIG is intended to be maintainable and extensible rather than frozen as a one-off release.
+
+You can extend or update the benchmark in several ways:
+
+- **Prompt updates.** Add or revise benchmark prompts under `data/prompt/`.
+- **Ground-truth updates.** Update released statistics and weighting files under `data/truth/`.
+- **Workflow updates.** Add new generation backbones or workflow templates under `data/workflow/`.
+- **Evaluator updates.** Swap the alignment model with `--align-model` or the `BIASIG_ALIGN_MODEL` environment variable.
+- **Benchmark maintenance tools.** Use the helper scripts in `tools/` when you need to regenerate or maintain prompt- and weight-related assets.
+
+This also means the repository supports future additions such as new demographic axes, new prompt families, new model workflows, and updated evaluation backbones.
 
 ## 🗂️ Repository Structure
 
