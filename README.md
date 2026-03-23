@@ -180,4 +180,4 @@ python 4_evaluate.py
 
 ## ⚖️ License
 
-This project is released under the terms specified in `LICENSE`.
+This project is released under the MIT License.
